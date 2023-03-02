@@ -1,0 +1,93 @@
+:root {
+    --link-bg-color: #1E2029;
+    --link-size: 50px;
+    --link-shadow-blur: 25px;
+    --link-gap: 20px;
+    
+    --linkpanell-bg-color: rgba(0, 0, 0, 0.5);
+    --linkpanell-bg-blur: 25px;
+    --linkpanell-padding: 40px;
+    
+    
+    --transition-duration: 0.3s;
+    
+    --transparent: rgba(0 0 0 1);
+    
+    --background-image-url: url(https://wallpapercave.com/wp/wp2003012.jpg);
+    
+    --border-radius: 10px;
+}
+
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-image: var(--background-image-url);
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    display: flex;
+    justify-content: center;
+}
+
+.favourite {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    border: solid  2px var(--transparent);
+    border-radius: var(--border-radius);
+
+    background-color: var(--link-bg-color);
+
+    padding: 15px;
+
+    height: var(--link-size);
+    width: var(--link-size);
+    
+    box-shadow: 0 0 var(--link-shadow-blur) calc(var(--link-size)/10) var(--link-bg-color);
+
+    cursor: pointer;
+
+    transition-duration: var(--transition-duration);
+    transition-timing-function: ease-out;
+}
+
+.favourite:hover {
+    transition-duration: var(--transition-duration);
+    transition-timing-function: ease-in;
+    transform: scale(1.05);
+}
+
+a img {
+    width: max(100%);
+    height: auto;
+    margin: auto;
+}
+
+#links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(calc(var(--link-size) + calc(var(--border-radius) *2)), 1fr));
+    gap: var(--link-gap);
+    justify-items: center;
+
+    background-color: var(--linkpanell-bg-color);
+    backdrop-filter: blur(var(--linkpanell-bg-blur));
+
+
+    border: solid var(--transparent) 0;
+    border-radius: var(--border-radius);
+
+    padding: var(--linkpanell-padding);
+    margin: var(--linkpanell-padding);
+
+    width: 60%;
+}
+
