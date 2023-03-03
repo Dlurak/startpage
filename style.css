@@ -1,9 +1,9 @@
 :root {
     --link-bg-color: #1E2029;
-    --link-size: 50px;
+    --link-size: 80px;
     --link-shadow-blur: 25px;
-    --link-gap: 20px;
-    
+    --link-selected-bg-color: #243136;
+
     --panell-bg-color: rgba(0, 0, 0, 0.5);
     --panell-bg-blur: 25px;
     --panell-padding: 40px;
@@ -32,6 +32,19 @@
     --background-image-url: url(https://wallpapercave.com/wp/wp2003012.jpg);
     
     --border-radius: 10px;
+
+    --swiggle-size: 15px;
+}
+
+@media (orientation: portrait) {
+    :root {
+        --link-gap: 45px;
+    }
+}
+@media (orientation: landscape) {
+    :root {
+        --link-gap: 90px;
+    }
 }
 
 
@@ -60,12 +73,13 @@ body {
     justify-content: center;
     align-items: center;
 
-    border: solid  2px var(--transparent);
+    border: solid  0 var(--transparent);
     border-radius: var(--border-radius);
 
     background-color: var(--link-bg-color);
 
     padding: 15px;
+    box-sizing: border-box;
 
     height: var(--link-size);
     width: var(--link-size);
@@ -78,14 +92,14 @@ body {
     transition-timing-function: ease-out;
 }
 
-.favourite:hover {
+.favourite:hover, .selected {
     transition-duration: var(--transition-duration);
     transition-timing-function: ease-in;
     transform: scale(1.05);
 }
 
 .favourite img {
-    width: max(100%);
+    width: 100%;
     height: auto;
     margin: auto;
 }
@@ -100,9 +114,10 @@ body {
 
 #linkPanell, #searchEngines {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(calc(var(--link-size) + calc(var(--border-radius) *2)), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(var(--link-size), 1fr));
     gap: var(--link-gap);
-    justify-items: center
+    justify-items: center;
+    
 
 }
 
@@ -140,10 +155,11 @@ body {
     margin-bottom: var(--searchfield-margin-bottom);
 
     box-shadow: 0 0 var(--searchfield-shadow-blur) var(--searchfield-shadow-size) var(--searchfield-bg-color);
+    box-sizing: border-box;
 }
 #searchField:focus-within {
     background-color: var(--focus-bg-color);
-    border: solid 2px var(--focus-border-color);
+    outline: solid 2px var(--focus-border-color);
 }
 
 .searchPart {
@@ -167,12 +183,36 @@ body {
 
 #searchInput:focus {
     outline: none;
+    height: var(--searchfield-height);
 }
 #searchInput:focus::placeholder {
     opacity: 0.1;
 }
 
 
-.searchButton {
+#searchButton {
     padding: var(--searchfield-padding-top-bottom);
+}
+#searchButton:disabled {
+    filter: brightness(50%);
+}
+
+.selected {
+    background-color: var(--link-selected-bg-color);
+}
+.swiggle {
+    animation: swiggle 0.3s linear;
+}
+
+#searchEngineIndicator {
+    height: calc(var(--searchfield-height) - calc(var(--searchfield-padding-top-bottom) * 2));
+}
+
+@keyframes swiggle {
+    0% {transform: translate(0, 0)}
+    15% {transform: translate(var(--swiggle-size), 0)}
+    35% {transform: translate(calc(var(--swiggle-size) * -1), 0)}
+    55% {transform: translate(var(--swiggle-size), 0)}
+    80% {transform: translate(calc(var(--swiggle-size) * -1), 0)}
+    100% {transform: translate(0, 0)}
 }
