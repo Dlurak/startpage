@@ -74,6 +74,12 @@ for (const button of engineButtons) { // here is the button select menu
     });
 }
 
+document.addEventListener('keyup', (event) => {
+    if ((event.key === 'e') && (document.activeElement.tagName !== 'INPUT')) {
+        searchInput.focus();
+    }
+});
+
 function configureEngine() {
     const button = document.getElementsByClassName('selected')[0];
     const image = button.children[0]; 

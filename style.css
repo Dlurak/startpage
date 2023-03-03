@@ -192,13 +192,16 @@ body {
 
 #searchButton {
     padding: var(--searchfield-padding-top-bottom);
+    cursor: pointer;
 }
 #searchButton:disabled {
     filter: brightness(50%);
+    cursor: not-allowed;
 }
 
 .selected {
     background-color: var(--link-selected-bg-color);
+    cursor: not-allowed;
 }
 .swiggle {
     animation: swiggle 0.3s linear;
