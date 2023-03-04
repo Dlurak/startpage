@@ -80,6 +80,41 @@ document.addEventListener('keyup', (event) => {
     }
 });
 
+document.getElementById('searchField').addEventListener('click', (event) => {
+    searchInput.focus();
+});
+
+for (let i of document.getElementsByClassName('resizer')) {
+    i.addEventListener('mousedown', (event) => {
+        let scrollElement = event.currentTarget.parentElement.getElementsByClassName('resizeable')[0]; 
+
+        const startHeight = parseInt(window.getComputedStyle(scrollElement).height);
+        const startMouseY = event.clientY;
+
+        function resize(mouseMoveEvent) {    
+            scrollElement.style.height = (startHeight + mouseMoveEvent.clientY - startMouseY) + 'px';
+
+
+            let gridRows = parseInt(window.getComputedStyle(scrollElement).gridTemplateRows.split(' ')[0]);
+            let gridGap = parseInt(window.getComputedStyle(scrollElement).gap);
+            let maxRows = Math.floor((parseInt(scrollElement.style.height) + gridGap)/(gridGap+gridRows));
+
+            let gridColumnElements = window.getComputedStyle(scrollElement).gridTemplateColumns.split(' ').length;
+            let gridChildsVisible = (maxRows * gridColumnElements);
+            
+            for (let j = 0; j < scrollElement.children.length;) {
+                scrollElement.children[j].style.opacity = j<gridChildsVisible ? 1:0;
+                j++;
+            }
+        }
+
+        i.parentElement.addEventListener('mousemove', resize);
+        i.parentElement.addEventListener('mouseup', () => {
+            i.parentElement.removeEventListener('mousemove', resize);
+        }, {once: true});
+    });
+}
+
 function configureEngine() {
     const button = document.getElementsByClassName('selected')[0];
     const image = button.children[0]; 

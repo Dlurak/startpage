@@ -29,7 +29,7 @@
     
     --transparent: rgba(0 0 0 1);
     
-    --background-image-url: url(https://wallpapercave.com/wp/wp2003012.jpg);
+    --background-image-url: url(https://i.redd.it/fjtqsonjqi491.jpg);
     
     --border-radius: 10px;
 
@@ -40,6 +40,9 @@
     :root {
         --link-gap: 45px;
     }
+    /* #linkPanell, #searchPanell {
+        
+    } */
 }
 @media (orientation: landscape) {
     :root {
@@ -59,7 +62,7 @@ html, body {
 
 body {
     background-image: var(--background-image-url);
-    background-size: cover;
+    background-size: 100%;
     background-repeat: no-repeat;
 
     display: flex;
@@ -70,6 +73,7 @@ body {
 .favourite {
     display: flex;
 
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 
@@ -112,13 +116,12 @@ body {
 }
 
 
-#linkPanell, #searchEngines {
+#linkList, #searchEngines {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(var(--link-size), 1fr));
     gap: var(--link-gap);
-    justify-items: center;
-    
-
+    justify-items: center; 
+    overflow: visible;
 }
 
 #linkPanell, #searchPanell {
@@ -133,7 +136,10 @@ body {
     margin: var(--panell-padding);
     
     width: var(--panell-width);
+    overflow: hidden;
 }
+
+
 
 
 #searchField {
@@ -156,6 +162,8 @@ body {
 
     box-shadow: 0 0 var(--searchfield-shadow-blur) var(--searchfield-shadow-size) var(--searchfield-bg-color);
     box-sizing: border-box;
+
+    cursor: text;
 }
 #searchField:focus-within {
     background-color: var(--focus-bg-color);
@@ -218,4 +226,25 @@ body {
     55% {transform: translate(var(--swiggle-size), 0)}
     80% {transform: translate(calc(var(--swiggle-size) * -1), 0)}
     100% {transform: translate(0, 0)}
+}
+
+.resizer {
+    cursor: row-resize;
+    display: flex;
+    justify-items: center;
+}
+
+.resizerLine {
+    width: 90%;
+    display: inline-block;
+    font-weight: bolder;
+    z-index: 100;
+}
+
+.resizeable {
+    overflow-y: scroll;
+}
+
+img {
+    pointer-events: none;
 }
