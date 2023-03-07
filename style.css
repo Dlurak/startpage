@@ -24,6 +24,15 @@
     --focus-bg-color: rgba(0, 0, 0, 0.2);
     --focus-border-color: #898C8F;
     
+    --menus-bg-color: hsl(0, 0%, 20%);
+    --menus-padding: 10px;
+    --menus-border-radius: 10px;
+
+    --settings-icon-color: white;
+    --settings-icon-margin: 10px;
+    --settings-rotation-duration: 1s;
+
+    --options-submenu-gap: 5px;
 
     --transition-duration: 0.3s;
     
@@ -258,4 +267,76 @@ img {
     -moz-user-select: none;
     -webkit-user-select: none;
     user-select: none;
+}
+
+
+#options {
+    display: flex;
+    flex-direction: column;
+
+    position: fixed;
+
+
+    bottom: 0px;
+    right: max(150px, 5%);
+}
+
+#menus {
+    display: none;
+    flex-wrap: wrap;
+
+    background-color: var(--menus-bg-color);
+    padding: var(--menus-padding);
+
+    border: var(--transparent) solid 0px;
+    border-radius: var(--menus-border-radius);
+}
+
+.optionsSubMenu {
+    display: flex;
+    flex-direction: column;
+    gap: var(--options-submenu-gap);
+
+}
+
+.optionsInput, .optionsButton {
+    background-color: var(--searchfield-bg-color);
+    backdrop-filter: blur(--searchfield-bg-blur);
+    border: var(--transparent) solid 0;
+    border-radius: 5px;
+
+    color: var(--searchfield-placeholder-color);
+    height: var(--searchfield-height);
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 1,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 40
+}
+
+#settingsIcon {
+    color: var(--settings-icon-color);
+    display: inline-block;
+    margin: var(--settings-icon-margin);
+    margin-left: auto;
+    cursor: pointer;
+
+    transition: var(--settings-rotation-duration) ease-in-out;
+
+
+}
+#settingsIcon:active {
+    transform: rotate(270deg);
+
+    transition: var(--settings-rotation-duration) ease-in-out;
+}
+
+#linkCreationButton {
+    cursor: pointer;
+}
+#linkCreationButton:disabled {
+    cursor: not-allowed;
 }

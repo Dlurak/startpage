@@ -156,3 +156,36 @@ window.addEventListener('resize', () => {
         hideElements(element);
     }
 });
+
+document.getElementById('linkCreationButton').addEventListener('click',() => {
+    const name = document.getElementById('linkCreationName').value;
+    const url = document.getElementById('linkCreationUrl').value;
+    const imgUrl = document.getElementById('linkCreationImageUrl').value;
+
+    if (name && url && imgUrl) {
+        const newLinkObject = {
+            'service': name,
+            'url': url,
+            'imgUrl': imgUrl
+        };
+        let linkList = JSON.parse(localStorage.getItem('favouriteLinks'));
+        linkList[linkList.length]=newLinkObject;
+
+        localStorage.setItem('favouriteLinks', JSON.stringify(linkList));
+
+        generateFavouriteLinks(linkList, document.getElementById('linkList'));
+    }
+});
+
+document.getElementById('settingsIcon').addEventListener('click', () => {
+    const oldStyle = document.getElementById('menus').style.display;
+
+    document.getElementById('menus').style.display = (oldStyle == 'none') ? 'flex':'none';
+});
+
+
+for (const input of document.getElementsByClassName('optionsInput')) {
+    input.addEventListener('input', () => {
+        document.getElementById('linkCreationButton').disabled =  Boolean(Array.from(document.getElementsByClassName('optionsInput')).filter(inputField => !inputField.value).length);
+    });
+}

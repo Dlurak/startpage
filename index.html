@@ -7,8 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="style.css">
-
     <title>Startseite</title>
 </head>
 <body>
@@ -98,6 +98,20 @@
         <div class="resizer">
             <hr class="resizerLine">
         </div>
+    </div>
+
+    <div id="options">
+        <div id="menus">
+            <div id="linkCreation" class="optionsSubMenu">
+                <input type="text" placeholder="Name" class="optionsInput" id="linkCreationName">
+                <input type="url" placeholder="URL" class="optionsInput" id="linkCreationUrl">
+                <input type="url" placeholder="Bild URL" class="optionsInput" id="linkCreationImageUrl">
+                <button class="optionsButton" id="linkCreationButton" disabled>Create a new Link</button>
+            </div>
+        </div>
+        <span class="material-symbols-outlined" id="settingsIcon" tabindex="0">
+            settings
+        </span>
     </div>
 
     <script src="engines.js"></script>
