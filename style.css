@@ -29,12 +29,13 @@
     
     --transparent: rgba(0 0 0 1);
     
-    --background-image-url: url(https://i.redd.it/fjtqsonjqi491.jpg);
+    --background-image-url: url(https://i.redd.it/qfqs21oqiwla1.jpg);
     
     --border-radius: 10px;
 
     --swiggle-size: 15px;
 }
+
 
 @media (orientation: portrait) {
     :root {
@@ -102,6 +103,7 @@ body {
     transform: scale(1.05);
 }
 
+
 .favourite img {
     width: 100%;
     height: auto;
@@ -137,10 +139,9 @@ body {
     
     width: var(--panell-width);
     overflow: hidden;
+
+    position: relative;
 }
-
-
-
 
 #searchField {
     display: flex;
@@ -226,6 +227,13 @@ body {
     55% {transform: translate(var(--swiggle-size), 0)}
     80% {transform: translate(calc(var(--swiggle-size) * -1), 0)}
     100% {transform: translate(0, 0)}
+
+    /* 0% {transform: rotate(0deg);}
+    15% {transform: rotate(10deg);}
+    35% {transform: rotate(-10deg);}
+    55% {transform: rotate(10deg);}
+    80% {transform: rotate(-10deg);}
+    100% {transform: rotate(0deg);} */
 }
 
 .resizer {
@@ -247,4 +255,7 @@ body {
 
 img {
     pointer-events: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
 }

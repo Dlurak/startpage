@@ -1,27 +1,46 @@
-const engines = {
-    "Brave": "https://search.brave.com/search?q=%s",
-    "DuckDuckGo": "https://duckduckgo.com/?q=%s",
-    "Google": "https://www.google.com/search?q=%s",
-    "Bing": "https://www.bing.com/search?q=%s",
-    "Ecosia": "https://www.ecosia.org/search?q=%s",
-    "Duden": "https://www.duden.de/suchen/dudenonline/%s",
-    "GitHub": "https://github.com/search?q=%s",
-    "Qwant": "https://www.qwant.com/?q=%s",
-    "Reddit": "https://www.reddit.com/search/?q=%s",
-    "Spotify": "https://open.spotify.com/search/%s",
-    "Wikipedia": "https://de.wikipedia.org/w/index.php?go=Go&search=%s",
-    "Youtube": "https://www.youtube.com/results?search_query=%s",
-    "Openstreetmap": "https://www.openstreetmap.org/search?query=%s",
-    "Amazon": "https://www.amazon.de/s?k=%s",
-    "Startpage": "https://www.startpage.com/sp/search?query=%s"
-}
-
 const searchInput = document.getElementById('searchInput');
 const searchButton = document.getElementById('searchButton');
 const engineButtons = document.getElementsByClassName('engine')
 let searchUrl;
 
+
+function hideElements(scrollElement) {
+    let gridRows = parseInt(window.getComputedStyle(scrollElement).gridTemplateRows.split(' ')[0]);
+    let gridGap = parseInt(window.getComputedStyle(scrollElement).gap);
+    let maxRows = Math.floor((parseInt(scrollElement.style.height) + gridGap) / (gridGap + gridRows));
+
+    let gridColumnElements = window.getComputedStyle(scrollElement).gridTemplateColumns.split(' ').length;
+    let gridChildsVisible = (maxRows * gridColumnElements);
+
+    for (let i = 0; i < scrollElement.children.length;) {
+        let visible = i < gridChildsVisible;
+
+        scrollElement.children[i].style.opacity = visible ? 1 : 0;
+        scrollElement.children[i].style.pointerEvents = visible ? "auto" : "none";
+        scrollElement.children[i].setAttribute('tabindex', visible ? '0' : '-1');
+        i++;
+    }
+}
+
+function generateFavouriteLinks(links, parentElement) {
+    for (const service of links) {
+        let aTag = document.createElement('a');
+        let imgTag = document.createElement('img');
+
+        imgTag.setAttribute('src', service.imgUrl);
+        imgTag.setAttribute('alt', service.service);
+
+        aTag.setAttribute('href', service.url);
+        aTag.classList.add('favourite');
+
+        aTag.appendChild(imgTag);
+
+        parentElement.appendChild(aTag);
+    }
+}
+
 configureEngine();
+generateFavouriteLinks(JSON.parse(localStorage.getItem('favouriteLinks')), document.getElementById('linkList'))
 
 function search() {
     const rawSearchTerm = searchInput.value;
@@ -86,38 +105,34 @@ document.getElementById('searchField').addEventListener('click', (event) => {
 
 for (let i of document.getElementsByClassName('resizer')) {
     i.addEventListener('mousedown', (event) => {
-        let scrollElement = event.currentTarget.parentElement.getElementsByClassName('resizeable')[0]; 
+        let scrollElement = event.currentTarget.parentElement.getElementsByClassName('resizeable')[0];
 
         const startHeight = parseInt(window.getComputedStyle(scrollElement).height);
         const startMouseY = event.clientY;
 
-        function resize(mouseMoveEvent) {    
+
+        function resize(mouseMoveEvent) {
             scrollElement.style.height = (startHeight + mouseMoveEvent.clientY - startMouseY) + 'px';
 
+            hideElements(scrollElement);
 
-            let gridRows = parseInt(window.getComputedStyle(scrollElement).gridTemplateRows.split(' ')[0]);
-            let gridGap = parseInt(window.getComputedStyle(scrollElement).gap);
-            let maxRows = Math.floor((parseInt(scrollElement.style.height) + gridGap)/(gridGap+gridRows));
+            localStorage.setItem(scrollElement.id, scrollElement.style.height)
 
-            let gridColumnElements = window.getComputedStyle(scrollElement).gridTemplateColumns.split(' ').length;
-            let gridChildsVisible = (maxRows * gridColumnElements);
-            
-            for (let j = 0; j < scrollElement.children.length;) {
-                scrollElement.children[j].style.opacity = j<gridChildsVisible ? 1:0;
-                j++;
-            }
         }
 
         i.parentElement.addEventListener('mousemove', resize);
-        i.parentElement.addEventListener('mouseup', () => {
-            i.parentElement.removeEventListener('mousemove', resize);
-        }, {once: true});
+        ['mouseup', 'mouseleave'].forEach(eventName => {
+            i.parentElement.addEventListener(eventName, () => {
+                i.parentElement.removeEventListener('mousemove', resize);
+            }, { once: true });
+        });
     });
 }
 
+
 function configureEngine() {
     const button = document.getElementsByClassName('selected')[0];
-    const image = button.children[0]; 
+    const image = button.children[0];
 
     const name = image.alt;
     const imageSrc = image.src;
@@ -129,3 +144,15 @@ function configureEngine() {
     searchInput.placeholder = `Search ${name}`
 
 }
+
+for (const element of document.getElementsByClassName('resizeable')) {
+    element.style.height = localStorage.getItem(element.id) // this code (and also the code in line 120) is very unsecure, due to the prominence of an id
+    hideElements(element);
+}
+
+window.addEventListener('resize', () => {
+    for (const element of document.getElementsByClassName('resizeable')) {
+        element.style.height = localStorage.getItem(element.id) // this code (and also the code in line 120) is very unsecure, due to the prominence of an id
+        hideElements(element);
+    }
+});
