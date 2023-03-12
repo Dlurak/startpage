@@ -51,10 +51,6 @@ function search() {
     window.open(fullUrl, '_self');
 }
 
-function selecetEngine() {
-    const selectedButton = document.getElementById();
-}
-
 searchInput.addEventListener('input', (event) => {
     event.currentTarget.value = event.currentTarget.value.replace(/\s+/g, ' ');
     let value = event.currentTarget.value;
@@ -157,7 +153,7 @@ window.addEventListener('resize', () => {
     }
 });
 
-document.getElementById('linkCreationButton').addEventListener('click',() => {
+document.getElementById('linkCreationButton').addEventListener('click', () => {
     const name = document.getElementById('linkCreationName').value;
     const url = document.getElementById('linkCreationUrl').value;
     const imgUrl = document.getElementById('linkCreationImageUrl').value;
@@ -169,7 +165,7 @@ document.getElementById('linkCreationButton').addEventListener('click',() => {
             'imgUrl': imgUrl
         };
         let linkList = JSON.parse(localStorage.getItem('favouriteLinks'));
-        linkList[linkList.length]=newLinkObject;
+        linkList[linkList.length] = newLinkObject;
 
         localStorage.setItem('favouriteLinks', JSON.stringify(linkList));
 
@@ -180,12 +176,47 @@ document.getElementById('linkCreationButton').addEventListener('click',() => {
 document.getElementById('settingsIcon').addEventListener('click', () => {
     const oldStyle = document.getElementById('menus').style.display;
 
-    document.getElementById('menus').style.display = (oldStyle == 'none') ? 'flex':'none';
+    document.getElementById('menus').style.display = (oldStyle == 'none') ? 'flex' : 'none';
 });
 
 
 for (const input of document.getElementsByClassName('optionsInput')) {
     input.addEventListener('input', () => {
-        document.getElementById('linkCreationButton').disabled =  Boolean(Array.from(document.getElementsByClassName('optionsInput')).filter(inputField => !inputField.value).length);
+        document.getElementById('linkCreationButton').disabled = Boolean(Array.from(document.getElementsByClassName('optionsInput')).filter(inputField => !inputField.value).length);
+    });
+}
+
+for (const button of document.querySelectorAll('a.favourite')) {
+    button.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
+        let contextMenu = document.getElementById('contextmenu');
+        contextMenu.style.top = event.pageY + 'px';
+        contextMenu.style.left = event.pageX + 'px';
+        contextMenu.style.display = 'flex';
+        contextMenu.innerHTML = '';
+
+
+        let item = document.createElement('div'); // hier die struktur neu schreiben für eine lsite aus objekten mit innerText und funktion; auch eine öffnen in neuen tab option hinzufügen (<a> hat ein attribu das in neuem tab macht)
+        item.innerText = 'Löschen';
+        item.classList.add('contextmenuEntry')
+
+        contextMenu.appendChild(item)
+
+        item.addEventListener('click', () => {
+            button.remove(); // muss noch im locale storage gespeichert werden
+        }, { once: true });
+
+        document.addEventListener('click', () => {
+            contextMenu.style.display = 'none';
+            let linkList = [];
+            for (const link of document.querySelectorAll('a.favourite')) {
+                linkList.push({
+                    'service': link.innerText,
+                    'url': link.href,
+                    'imgUrl': link.children[0].src
+                });
+            }
+            localStorage.setItem('favouriteLinks', JSON.stringify(linkList));
+        }, { once: true });
     });
 }
