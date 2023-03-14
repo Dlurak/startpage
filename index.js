@@ -23,6 +23,7 @@ function hideElements(scrollElement) {
 }
 
 function generateFavouriteLinks(links, parentElement) {
+    parentElement.innerHTML = '';
     for (const service of links) {
         let aTag = document.createElement('a');
         let imgTag = document.createElement('img');
@@ -170,6 +171,10 @@ document.getElementById('linkCreationButton').addEventListener('click', () => {
         localStorage.setItem('favouriteLinks', JSON.stringify(linkList));
 
         generateFavouriteLinks(linkList, document.getElementById('linkList'));
+
+        document.getElementById('linkCreationName').value = '';
+        document.getElementById('linkCreationUrl').value = '';
+        document.getElementById('linkCreationImageUrl').value = '';
     }
 });
 
