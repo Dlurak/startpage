@@ -194,7 +194,18 @@ for (const button of document.querySelectorAll('a.favourite')) { // generate con
 
 
         let items = {
-            'Löschen': (button) => {button.remove()},
+            'Löschen': (button) => {
+                button.remove();
+                let linkList = [];
+                for (const link of document.querySelectorAll('a.favourite')) {
+                    linkList.push({
+                        'service': link.innerText,
+                        'url': link.href,
+                        'imgUrl': link.children[0].src
+                    });
+                }
+                localStorage.setItem('favouriteLinks', JSON.stringify(linkList));
+            },
             'In neuen Tab öffnen': (button) => {window.open(button.href, '_blank')},
         };
 
@@ -210,15 +221,6 @@ for (const button of document.querySelectorAll('a.favourite')) { // generate con
 
         document.addEventListener('click', () => { // hide context menu on click
             contextMenu.style.display = 'none';
-            let linkList = [];
-            for (const link of document.querySelectorAll('a.favourite')) {
-                linkList.push({
-                    'service': link.innerText,
-                    'url': link.href,
-                    'imgUrl': link.children[0].src
-                });
-            }
-            localStorage.setItem('favouriteLinks', JSON.stringify(linkList));
         }, { once: true });
     });
 }
