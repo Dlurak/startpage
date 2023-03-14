@@ -40,9 +40,6 @@ function generateFavouriteLinks(links, parentElement) {
     }
 }
 
-configureEngine();
-generateFavouriteLinks(JSON.parse(localStorage.getItem('favouriteLinks')), document.getElementById('linkList'))
-
 function search() {
     const rawSearchTerm = searchInput.value;
     const urlSearchTerm = rawSearchTerm.replace(/\s+/g, '%20');
@@ -86,24 +83,23 @@ searchInput.addEventListener('input', (event) => { // disable search button if s
     searchButton.disabled = (value === '');
 });
 
-searchInput.addEventListener('keydown', (event) => {
+searchInput.addEventListener('keydown', (event) => { // search on enter
     if (event.key === 'Enter' && event.currentTarget.value !== '') {
         search();
     }
 });
 
-searchButton.addEventListener('click', () => {
+searchButton.addEventListener('click', () => { // search on button click
     search();
 });
 
 for (const button of engineButtons) { // here is the button select menu
-    button.addEventListener('click', (event) => {
+    button.addEventListener('click', (event) => { // swiggle animation if button is already selected
         let clickedButton = event.currentTarget;
 
 
         if (clickedButton.className.includes('selected')) {
             clickedButton.classList.add('swiggle')
-
         } else {
             for (const i of document.getElementsByClassName('selected')) {
                 i.classList.remove('selected');
@@ -112,20 +108,18 @@ for (const button of engineButtons) { // here is the button select menu
             configureEngine();
         }
     });
-    button.addEventListener('animationend', (event) => {
+
+    button.addEventListener('animationend', (event) => { // remove swiggle animation
         event.currentTarget.classList.remove('swiggle')
     });
 }
 
-document.addEventListener('keyup', (event) => {
+document.addEventListener('keyup', (event) => { // focus search input on key 'e'
     if ((event.key === 'e') && (document.activeElement.tagName !== 'INPUT')) {
         searchInput.focus();
     }
 });
 
-document.getElementById('searchField').addEventListener('click', (event) => {
-    searchInput.focus();
-});
 
 for (let i of document.getElementsByClassName('resizer')) {
     ['mousedown', 'touchstart'].forEach(eventName => { // resize elements
@@ -153,39 +147,17 @@ for (let i of document.getElementsByClassName('resizer')) {
 }
 
 
-function configureEngine() {
-    const button = document.getElementsByClassName('selected')[0];
-    const image = button.children[0];
-
-    const name = image.alt;
-    const imageSrc = image.src;
-    const baseUrl = engines[name]
-
-    searchUrl = baseUrl;
-    document.getElementById('searchEngineIndicator').src = imageSrc;
-    document.getElementById('searchEngineIndicator').alt = name;
-    searchInput.placeholder = `Search ${name}`
-
-}
-
-for (const element of document.getElementsByClassName('resizeable')) {
-    element.style.height = localStorage.getItem(element.id) // this code (and also the code in line 120) is very unsecure, due to the prominence of an id
+for (const element of document.getElementsByClassName('resizeable')) { // set the local storage height to the resizeable elements
+    element.style.height = localStorage.getItem(element.id) // this code  is very unsecure, due to the prominence of an id
     hideElements(element);
 }
 
-window.addEventListener('resize', () => {
-    for (const element of document.getElementsByClassName('resizeable')) {
-        element.style.height = localStorage.getItem(element.id) // this code (and also the code in line 120) is very unsecure, due to the prominence of an id
-        hideElements(element);
-    }
-});
-
-document.getElementById('linkCreationButton').addEventListener('click', () => {
+document.getElementById('linkCreationButton').addEventListener('click', () => { // create new link
     const name = document.getElementById('linkCreationName').value;
     const url = document.getElementById('linkCreationUrl').value;
     const imgUrl = document.getElementById('linkCreationImageUrl').value;
 
-    if (name && url && imgUrl) {
+    if (name && url && imgUrl) { // check if all fields are filled
         const newLinkObject = {
             'service': name,
             'url': url,
@@ -204,20 +176,20 @@ document.getElementById('linkCreationButton').addEventListener('click', () => {
     }
 });
 
-document.getElementById('settingsIcon').addEventListener('click', () => {
+document.getElementById('settingsIcon').addEventListener('click', () => { // show settings menu
     const oldStyle = document.getElementById('menus').style.display;
 
     document.getElementById('menus').style.display = (oldStyle == 'none') ? 'flex' : 'none';
 });
 
 
-for (const input of document.getElementsByClassName('optionsInput')) {
+for (const input of document.getElementsByClassName('optionsInput')) { // disable link creation button if at least one input field is empty
     input.addEventListener('input', () => {
         document.getElementById('linkCreationButton').disabled = Boolean(Array.from(document.getElementsByClassName('optionsInput')).filter(inputField => !inputField.value).length);
     });
 }
 
-for (const button of document.querySelectorAll('a.favourite')) {
+for (const button of document.querySelectorAll('a.favourite')) { // generate context menu for favourite links to remove them
     button.addEventListener('contextmenu', (event) => {
         event.preventDefault();
         let contextMenu = document.getElementById('contextmenu');
@@ -227,27 +199,34 @@ for (const button of document.querySelectorAll('a.favourite')) {
         contextMenu.innerHTML = '';
 
 
-        let item = document.createElement('div'); // hier die struktur neu schreiben für eine lsite aus objekten mit innerText und funktion; auch eine öffnen in neuen tab option hinzufügen (<a> hat ein attribu das in neuem tab macht)
-        item.innerText = 'Löschen';
-        item.classList.add('contextmenuEntry')
+        let items = {
+            'Löschen': (button) => {
+                button.remove();
+                let linkList = [];
+                for (const link of document.querySelectorAll('a.favourite')) {
+                    linkList.push({
+                        'service': link.innerText,
+                        'url': link.href,
+                        'imgUrl': link.children[0].src
+                    });
+                }
+                localStorage.setItem('favouriteLinks', JSON.stringify(linkList));
+            },
+            'In neuen Tab öffnen': (button) => {window.open(button.href, '_blank')},
+        };
 
-        contextMenu.appendChild(item)
+        for (const [key, value] of Object.entries(items)) {
+            let menuItem = document.createElement('div');
+            menuItem.innerText = key;
+            menuItem.classList.add('contextmenuEntry');
+            menuItem.addEventListener('click', () => {
+                value(button);
+            }, { once: true });
+            contextMenu.appendChild(menuItem);
+        }
 
-        item.addEventListener('click', () => {
-            button.remove(); // muss noch im locale storage gespeichert werden
-        }, { once: true });
-
-        document.addEventListener('click', () => {
+        document.addEventListener('click', () => { // hide context menu on click
             contextMenu.style.display = 'none';
-            let linkList = [];
-            for (const link of document.querySelectorAll('a.favourite')) {
-                linkList.push({
-                    'service': link.innerText,
-                    'url': link.href,
-                    'imgUrl': link.children[0].src
-                });
-            }
-            localStorage.setItem('favouriteLinks', JSON.stringify(linkList));
         }, { once: true });
     });
 }
