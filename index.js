@@ -52,7 +52,34 @@ function search() {
     window.open(fullUrl, '_self');
 }
 
-searchInput.addEventListener('input', (event) => {
+function configureEngine() {
+    const button = document.getElementsByClassName('selected')[0];
+    const image = button.children[0];
+
+    const name = image.alt;
+    const imageSrc = image.src;
+    const baseUrl = engines[name]
+
+    searchUrl = baseUrl;
+    document.getElementById('searchEngineIndicator').src = imageSrc;
+    document.getElementById('searchEngineIndicator').alt = name;
+    searchInput.placeholder = `Search ${name}`
+
+}
+
+function resize(scrollElement, startHeight, startMouseY, currectMouseY) {
+    scrollElement.style.height = (startHeight + currectMouseY - startMouseY) + 'px';
+
+    hideElements(scrollElement);
+    localStorage.setItem(scrollElement.id, scrollElement.style.height);
+}
+
+configureEngine();
+generateFavouriteLinks(JSON.parse(localStorage.getItem('favouriteLinks')), document.getElementById('linkList'))
+
+
+
+searchInput.addEventListener('input', (event) => { // disable search button if search input is empty and remove multiple spaces
     event.currentTarget.value = event.currentTarget.value.replace(/\s+/g, ' ');
     let value = event.currentTarget.value;
 
@@ -101,27 +128,26 @@ document.getElementById('searchField').addEventListener('click', (event) => {
 });
 
 for (let i of document.getElementsByClassName('resizer')) {
-    i.addEventListener('mousedown', (event) => {
-        let scrollElement = event.currentTarget.parentElement.getElementsByClassName('resizeable')[0];
+    ['mousedown', 'touchstart'].forEach(eventName => { // resize elements
+        i.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            let scrollElement = event.currentTarget.parentElement.getElementsByClassName('resizeable')[0];
 
-        const startHeight = parseInt(window.getComputedStyle(scrollElement).height);
-        const startMouseY = event.clientY;
+            const startHeight = parseInt(window.getComputedStyle(scrollElement).height);
+            const startMouseY = parseInt(event.clientY || event.touches[0].clientY);
+            const resizeFunction = (event) => resize(scrollElement, startHeight, startMouseY, parseInt(event.clientY || event.touches[0].clientY));
 
-
-        function resize(mouseMoveEvent) {
-            scrollElement.style.height = (startHeight + mouseMoveEvent.clientY - startMouseY) + 'px';
-
-            hideElements(scrollElement);
-
-            localStorage.setItem(scrollElement.id, scrollElement.style.height)
-
-        }
-
-        i.parentElement.addEventListener('mousemove', resize);
-        ['mouseup', 'mouseleave'].forEach(eventName => {
-            i.parentElement.addEventListener(eventName, () => {
-                i.parentElement.removeEventListener('mousemove', resize);
-            }, { once: true });
+            ['mousemove', 'touchmove'].forEach(eventName => {
+                // add event listener to resize the right element
+                i.parentElement.addEventListener(eventName, resizeFunction);
+            });
+            ['mouseup', 'mouseleave', 'touchend', 'touchcancel'].forEach(eventName => {
+                i.parentElement.addEventListener(eventName, () => {
+                    ['mousemove', 'touchmove'].forEach(eventName => {
+                        i.parentElement.removeEventListener(eventName, resizeFunction);
+                    });
+                }, {once: true});
+            });
         });
     });
 }
