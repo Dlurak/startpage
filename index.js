@@ -1,6 +1,5 @@
 const searchInput = document.getElementById('searchInput');
 const searchButton = document.getElementById('searchButton');
-const engineButtons = document.getElementsByClassName('engine')
 let searchUrl;
 
 
@@ -71,7 +70,32 @@ function resize(scrollElement, startHeight, startMouseY, currectMouseY) {
     localStorage.setItem(scrollElement.id, scrollElement.style.height);
 }
 
-configureEngine();
+function generateSearchEngines() {
+    let engineWrapper = document.getElementById('searchEngines');
+    engineWrapper.innerHTML = '';
+    selected = false;
+    for (const engine of JSON.parse(localStorage.getItem('engines'))) {
+        let engineButton = document.createElement('button');
+        // give the class 'selected' to the first engine
+        if (!selected) {
+            engineButton.classList.add('selected');
+        }
+        engineButton.classList.add('favourite', 'engine');
+
+        let engineImage = document.createElement('img');
+        engineImage.src = engine.imgUrl;
+        engineImage.alt = engine.name;
+
+        engineButton.appendChild(engineImage);
+
+        engineWrapper.appendChild(engineButton);
+        selected = true;
+    }
+    configureEngine();
+}
+
+
+generateSearchEngines();
 generateFavouriteLinks(JSON.parse(localStorage.getItem('favouriteLinks')), document.getElementById('linkList'))
 
 
@@ -93,10 +117,9 @@ searchButton.addEventListener('click', () => { // search on button click
     search();
 });
 
-for (const button of engineButtons) { // here is the button select menu
+for (const button of document.getElementsByClassName('engine')) { // here is the button select menu
     button.addEventListener('click', (event) => { // swiggle animation if button is already selected
         let clickedButton = event.currentTarget;
-
 
         if (clickedButton.className.includes('selected')) {
             clickedButton.classList.add('swiggle')
@@ -111,7 +134,7 @@ for (const button of engineButtons) { // here is the button select menu
 
     button.addEventListener('animationend', (event) => { // remove swiggle animation
         event.currentTarget.classList.remove('swiggle')
-    });
+    }, { once: true });
 }
 
 document.addEventListener('keyup', (event) => { // focus search input on key 'e'
@@ -140,7 +163,7 @@ for (let i of document.getElementsByClassName('resizer')) {
                     ['mousemove', 'touchmove'].forEach(eventName => {
                         i.parentElement.removeEventListener(eventName, resizeFunction);
                     });
-                }, {once: true});
+                }, { once: true });
             });
         });
     });
@@ -212,7 +235,7 @@ for (const button of document.querySelectorAll('a.favourite')) { // generate con
                 }
                 localStorage.setItem('favouriteLinks', JSON.stringify(linkList));
             },
-            'In neuen Tab öffnen': (button) => {window.open(button.href, '_blank')},
+            'In neuen Tab öffnen': (button) => { window.open(button.href, '_blank') },
         };
 
         for (const [key, value] of Object.entries(items)) {

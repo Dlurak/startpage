@@ -10,7 +10,7 @@ const engines = {
     "Reddit": "https://www.reddit.com/search/?q=%s",
     "Spotify": "https://open.spotify.com/search/%s",
     "Wikipedia": "https://de.wikipedia.org/w/index.php?go=Go&search=%s",
-    "Youtube": "https://www.youtube.com/results?search_query=%s",
+    "YouTube": "https://www.youtube.com/results?search_query=%s",
     "Openstreetmap": "https://www.openstreetmap.org/search?query=%s",
     "Amazon": "https://www.amazon.de/s?k=%s",
     "Startpage": "https://www.startpage.com/sp/search?query=%s",
