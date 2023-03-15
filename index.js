@@ -54,9 +54,12 @@ function configureEngine() {
 
     const name = image.alt;
     const imageSrc = image.src;
-    const baseUrl = engines[name]
 
-    searchUrl = baseUrl;
+    JSON.parse(localStorage.getItem('engines')).forEach(obj => {
+        if (obj.name === name) {
+            searchUrl = obj.url;
+        }
+    });
     document.getElementById('searchEngineIndicator').src = imageSrc;
     document.getElementById('searchEngineIndicator').alt = name;
     searchInput.placeholder = `Search ${name}`

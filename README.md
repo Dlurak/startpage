@@ -3,11 +3,8 @@
 Now you have to manually setup the local storage or else the app will not work. You can to this by going to the console and typing the following js line:
 
 ```JavaScript
-localStorage.setItem('todo', JSON.stringify([{
-    service: 'Google',
-    url: 'https://google.com',
-    imgUrl: 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-}]));
+localStorage.setItem('favouriteLinks', JSON.stringify([]));
+localStorage.setItem('engines', JSON.stringify([]));
 ```
 
 This will add favourite link to Google *(You can later remove this)*. And then just reload the page.
