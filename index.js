@@ -205,7 +205,7 @@ document.getElementById('linkCreationButton').addEventListener('click', () => { 
 document.getElementById('settingsIcon').addEventListener('click', () => { // show settings menu
     const oldStyle = document.getElementById('menus').style.display;
 
-    document.getElementById('menus').style.display = (oldStyle == 'none') ? 'flex' : 'none';
+    document.getElementById('menus').style.display = (oldStyle === 'none') ? 'flex' : 'none';
 });
 
 
@@ -239,9 +239,22 @@ for (const button of document.querySelectorAll('a.favourite')) { // generate con
                 localStorage.setItem('favouriteLinks', JSON.stringify(linkList));
             },
             'In neuen Tab öffnen': (button) => { window.open(button.href, '_blank') },
+            'Link kopieren': (button) => { navigator.clipboard.writeText(button.href) },
+            'Danach suchen': (button) => {
+                searchInput.value = button.children[0].alt;
+                searchInput.focus();
+            },
+            'hr': () => { }, // horizontal rule
+            'Abbrechen': () => { }, // do nothing, just close the context menu,
         };
 
         for (const [key, value] of Object.entries(items)) {
+            if (key === 'hr') {
+                let hr = document.createElement('hr');
+                hr.classList.add('contextmenuEntry');
+                contextMenu.appendChild(hr);
+                continue;
+            }
             let menuItem = document.createElement('div');
             menuItem.innerText = key;
             menuItem.classList.add('contextmenuEntry');

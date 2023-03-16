@@ -72,12 +72,15 @@ html, body {
 
 body {
     background-image: var(--background-image-url);
-    background-size: 100%;
+    /* background-size: 100%; */
     background-repeat: no-repeat;
+    background-size: cover;
 
     display: flex;
     align-items: center;
     flex-direction: column;
+
+    min-height: 100vh;
 }
 
 .favourite {
@@ -355,10 +358,28 @@ img {
     position: absolute;
 }
 
-.contextmenuEntry {
+#contextmenu > div{
     color: var(--searchfield-placeholder-color);
     cursor: pointer;
+
+    width: 100%;
+
+    border-radius: 5px;
+    padding: 2px;
 }
+
+#contextmenu > hr {
+    cursor: default;
+    width: 100%;
+    background-color: var(--searchfield-placeholder-color);
+}
+
+.contextmenuEntry:hover {
+    background-color: hsla(0, 10%, 0%, 0.5);
+    cursor: grabbing;
+}
+
 .contextmenuEntry:active {
     cursor: grabbing;
 }
+
