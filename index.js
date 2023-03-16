@@ -2,6 +2,25 @@ const searchInput = document.getElementById('searchInput');
 const searchButton = document.getElementById('searchButton');
 let searchUrl;
 
+localStorage.favouriteLinks  ||= JSON.stringify([])
+if (!(localStorage.engines)) {
+    alert('No search engines found. Please add one. This will later be replaced by a settings menu.')
+    let name = prompt('Name of the search engine');
+    let url = prompt('Url of the search engine. Use %s as placeholder for the search term');
+    let imgUrl = prompt('Url of the search engine icon');
+
+    while (!(name && url && imgUrl)) {
+        name = prompt('Name of the search engine');
+        url = prompt('Url of the search engine. Use %s as placeholder for the search term');
+        imgUrl = prompt('Url of the search engine icon');
+    }
+
+    localStorage.engines = JSON.stringify([{
+        name: name,
+        url: url,
+        imgUrl: imgUrl
+    }]);
+}
 
 function hideElements(scrollElement) {
     let gridRows = parseInt(window.getComputedStyle(scrollElement).gridTemplateRows.split(' ')[0]);
@@ -50,6 +69,9 @@ function search() {
 
 function configureEngine() {
     const button = document.getElementsByClassName('selected')[0];
+    if (button === undefined) {
+        return;
+    }
     const image = button.children[0];
 
     const name = image.alt;
@@ -62,8 +84,7 @@ function configureEngine() {
     });
     document.getElementById('searchEngineIndicator').src = imageSrc;
     document.getElementById('searchEngineIndicator').alt = name;
-    searchInput.placeholder = `Search ${name}`
-
+    searchInput.placeholder = `Search ${name}`;
 }
 
 function resize(scrollElement, startHeight, startMouseY, currectMouseY) {
