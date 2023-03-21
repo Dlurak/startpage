@@ -2,7 +2,7 @@ const searchInput = document.getElementById('searchInput');
 const searchButton = document.getElementById('searchButton');
 let searchUrl;
 
-localStorage.favouriteLinks  ||= JSON.stringify([])
+localStorage.favouriteLinks ||= JSON.stringify([])
 if (!(localStorage.engines)) {
     alert('No search engines found. Please add one. This will later be replaced by a settings menu.')
     let name = prompt('Name of the search engine');
@@ -252,7 +252,7 @@ for (const button of document.querySelectorAll('a.favourite')) { // generate con
                 let linkList = [];
                 for (const link of document.querySelectorAll('a.favourite')) {
                     linkList.push({
-                        'service': link.innerText,
+                        'service': link.children[0].alt,
                         'url': link.href,
                         'imgUrl': link.children[0].src
                     });
@@ -288,5 +288,42 @@ for (const button of document.querySelectorAll('a.favourite')) { // generate con
         document.addEventListener('click', () => { // hide context menu on click
             contextMenu.style.display = 'none';
         }, { once: true });
+    });
+}
+
+for (const button of document.querySelectorAll('button.favourite.engine')) {
+    button.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
+        let contextMenu = document.getElementById('contextmenu');
+        contextMenu.style.top = event.pageY + 'px';
+        contextMenu.style.left = event.pageX + 'px';
+        contextMenu.style.display = 'flex';
+        contextMenu.innerHTML = '';
+
+        let items = {
+            'Löschen': (button) => {
+                button.remove();
+                let linkList = [];
+                for (const engine of document.querySelectorAll('button.favourite.engine')) { // this will be rewritten to find the elements by the alt of the child img
+                    const name = engine.children[0].alt;
+                    for (const engineObject of Object.entries(JSON.parse(localStorage.getItem('engines')))) {
+                        if (engineObject[1].name === name) {
+                            linkList.push(engineObject[1]);
+                        }
+                    }
+                }
+                localStorage.setItem('engines', JSON.stringify(linkList));
+            }
+        };
+
+        for (const [key, value] of Object.entries(items)) {
+            let menuItem = document.createElement('div');
+            menuItem.innerText = key;
+            menuItem.classList.add('contextmenuEntry');
+            menuItem.addEventListener('click', () => {
+                value(button);
+            }, { once: true });
+            contextMenu.appendChild(menuItem);
+        }
     });
 }
