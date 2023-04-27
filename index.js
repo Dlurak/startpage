@@ -327,3 +327,9 @@ for (const button of document.querySelectorAll('button.favourite.engine')) {
         }
     });
 }
+
+for (const element of document.getElementsByClassName('resizeable')) {
+    window.addEventListener('resize', () => {
+        hideElements(element);
+    });
+}
